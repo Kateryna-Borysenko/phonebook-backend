@@ -30,6 +30,9 @@ export const deleteContact = async (req, res) => {
   res.status(200).json(contact);
 };
 
-export const createContact = async (req, res) => { };
+export const createContact = async (req, res) => {
+  const newContact = await addContact(req.body);
+  res.status(201).json(newContact);
+};
 
 export const updateContact = async (req, res) => { };
