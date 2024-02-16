@@ -5,8 +5,12 @@ import {
   addContact,
   modifyContact,
 } from '../services/contactServices.js';
+import HttpError from '../helpers/HttpError.js';
 
-export const getAllContacts = (req, res) => { };
+export const getAllContacts = async (req, res) => {
+  const contacts = await contactList();
+  res.json(contacts);
+};
 
 export const getOneContact = (req, res) => { };
 
