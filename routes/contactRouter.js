@@ -8,6 +8,7 @@ import {
 } from '../controllers/contactControllers.js';
 import validateRequestBody from '../middleware/validateRequestBody.js';
 import controllerWrapper from '../helpers/controllerWrapper.js';
+import { createContactSchema, updateContactSchema } from '../schemas/contactSchemas.js';
 
 const contactRouter = express.Router();
 
@@ -17,8 +18,8 @@ contactRouter.get('/:id', controllerWrapper(getOneContact));
 
 contactRouter.delete('/:id', controllerWrapper(deleteContact));
 
-contactRouter.post('/', controllerWrapper(createContact));
+contactRouter.post('/', validateRequestBody(createContactSchema), controllerWrapper(createContact));
 
-contactRouter.put('/:id', controllerWrapper(updateContact));
+contactRouter.put('/:id', validateRequestBody(updateContactSchema), controllerWrapper(updateContact));
 
 export default contactRouter;
