@@ -5,7 +5,7 @@ import {
   addContact,
   modifyContact,
 } from '../services/contactServices.js';
-import HttpError from '../helpers/httpError.js';
+import HttpError from '../helpers/HttpError.js';
 
 export const getAllContacts = async (req, res) => {
   const contacts = await contactList();
