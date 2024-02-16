@@ -31,6 +31,12 @@ const removeContact = async id => {
 
 const addContact = async ({ name, email, phone }) => {
   const contacts = await contactList();
+
+  const phoneExists = contacts.some(contact => contact.phone === phone);
+  if (phoneExists) {
+    throw HttpError(409, 'Phone number already exists');
+  }
+
   const newContact = {
     id: nanoid(),
     name,
