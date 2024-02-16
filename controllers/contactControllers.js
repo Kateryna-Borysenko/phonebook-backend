@@ -5,7 +5,7 @@ import {
   addContact,
   modifyContact,
 } from '../services/contactServices.js';
-import HttpError from '../helpers/HttpError.js';
+import HttpError from '../helpers/httpError.js';
 
 export const getAllContacts = async (req, res) => {
   const contacts = await contactList();
@@ -35,4 +35,11 @@ export const createContact = async (req, res) => {
   res.status(201).json(newContact);
 };
 
-export const updateContact = async (req, res) => { };
+export const updateContact = async (req, res) => {
+  const { id } = req.params;
+  const updatedContact = await modifyContact(id, req.body);
+  if (!updatedContact) {
+    throw HttpError(404);
+  }
+  res.status(200).json(updatedContact);
+};
