@@ -12,10 +12,17 @@ export const getAllContacts = async (req, res) => {
   res.json(contacts);
 };
 
-export const getOneContact = (req, res) => { };
+export const getOneContact = async (req, res, next) => {
+  const { id } = req.params;
+  const contact = await getContactById(id);
+  if (!contact) {
+    throw HttpError(404);
+  }
+  res.json(contact);
+};
 
-export const deleteContact = (req, res) => { };
+export const deleteContact = async (req, res) => { };
 
-export const createContact = (req, res) => { };
+export const createContact = async (req, res) => { };
 
-export const updateContact = (req, res) => { };
+export const updateContact = async (req, res) => { };
