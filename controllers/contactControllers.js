@@ -9,7 +9,7 @@ import HttpError from '../helpers/HttpError.js';
 
 export const getAllContacts = async (req, res) => {
   const contacts = await contactList();
-  res.json(contacts);
+  res.status(200).json(contacts);
 };
 
 export const getOneContact = async (req, res, next) => {
@@ -18,10 +18,17 @@ export const getOneContact = async (req, res, next) => {
   if (!contact) {
     throw HttpError(404);
   }
-  res.json(contact);
+  res.status(200).json(contact);
 };
 
-export const deleteContact = async (req, res) => { };
+export const deleteContact = async (req, res) => {
+  const { id } = req.params;
+  const contact = await removeContact(id);
+  if (!contact) {
+    throw HttpError(404);
+  }
+  res.status(200).json(contact);
+};
 
 export const createContact = async (req, res) => { };
 
