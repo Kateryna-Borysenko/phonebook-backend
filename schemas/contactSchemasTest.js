@@ -4,7 +4,6 @@ const contactData = {
   name: "John Doe",
   email: "john.doe@example.com",
   phone: "+1234567890",
-  // phone: "(748) 206-2688",
 };
 
 const { error, value } = createContactSchema.validate(contactData);
