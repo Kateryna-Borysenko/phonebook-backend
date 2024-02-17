@@ -22,6 +22,10 @@ const baseContactSchemaFields = {
       'string.empty': 'Phone number cannot be empty',
       'any.required': 'Phone number is a required field'
     }),
+  favorite: Joi.boolean().default(false).optional()
+    .messages({
+      'boolean.base': 'Favorite must be a boolean value'
+    }),
 };
 
 export const createContactSchema = Joi.object({
