@@ -20,7 +20,7 @@ const userSchema = mongoose.Schema({
   token: String
 }, { versionKey: false, timestamps: true });
 
-contactSchema.post('save', handleMongooseError);
+userSchema.post('save', handleMongooseError);
 
 const User = mongoose.model('User', userSchema);
 

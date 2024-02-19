@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import contactRouter from './routes/contactRouter.js';
+import userRouter from './routes/userRouter.js';
 
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/contacts', contactRouter);
+app.use('/api/users', userRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: 'Route not found' });
