@@ -1,19 +1,7 @@
 import Joi from 'joi';
 import { EMAIL_REGEX, PASSWORD_REGEX } from '../helpers/regexPatterns.js';
 
-export const registerSchema = Joi.object({
-  name: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30)
-    .required()
-    .messages({
-      'string.alphanum': 'Name must only contain alpha-numeric characters',
-      'string.min': 'Name must be at least 3 characters long',
-      'string.max': 'Name must be less than or equal to 30 characters long',
-      'any.required': 'Name is a required field',
-    }),
-
+const baseUserSchemaFields = {
   email: Joi.string()
     .pattern(EMAIL_REGEX)
     .required()
@@ -33,4 +21,25 @@ export const registerSchema = Joi.object({
       'string.pattern.base': 'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character',
       'any.required': 'Password is a required field',
     }),
+
+};
+
+export const registerSchema = Joi.object({
+  name: Joi.string()
+    .alphanum()
+    .min(3)
+    .max(30)
+    .required()
+    .messages({
+      'string.alphanum': 'Name must only contain alpha-numeric characters',
+      'string.min': 'Name must be at least 3 characters long',
+      'string.max': 'Name must be less than or equal to 30 characters long',
+      'any.required': 'Name is a required field',
+    }),
+
+  ...baseUserSchemaFields,
+});
+
+export const loginSchema = Joi.object({
+  ...baseUserSchemaFields,
 });
