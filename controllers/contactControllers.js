@@ -2,8 +2,38 @@ import Contact from '../models/contactModel.js';
 import HttpError from '../helpers/HttpError.js';
 
 export const getAllContacts = async (req, res) => {
-  const contacts = await Contact.find()
-  res.status(200).json(contacts);
+  const { _id: owner } = req.user;
+  const { favorite } = req.query;
+
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 5;
+  const skip = (page - 1) * limit;
+
+  let filter = { owner };
+  if (favorite) {
+    filter.favorite = favorite === 'true';
+  }
+
+  try {
+    const total = await Contact.countDocuments(filter);
+
+    const contacts = await Contact.find(filter, '-createdAt -updatedAt -__v')
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.status(200).json({
+      contacts,
+      totalPages,
+      currentPage: page,
+      pageSize: limit,
+      totalContacts: total
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching contacts" });
+  }
 };
 
 export const getOneContact = async (req, res, next) => {
@@ -16,13 +46,15 @@ export const getOneContact = async (req, res, next) => {
 };
 
 export const createContact = async (req, res) => {
+  const { _id: owner } = req.user;
+
   const existingContact = await Contact.findOne({ phone: req.body.phone });
 
   if (existingContact) {
     return res.status(409).json({ message: 'Contact with this phone number already exists.' });
   }
 
-  const newContact = await Contact.create(req.body);
+  const newContact = await Contact.create({ ...req.body, owner });
   res.status(201).json(newContact);
 };
 
@@ -46,7 +78,6 @@ export const updateContact = async (req, res) => {
 
   res.status(200).json(updatedContact);
 };
-
 
 export const updateFavorite = async (req, res) => {
   const { id } = req.params;

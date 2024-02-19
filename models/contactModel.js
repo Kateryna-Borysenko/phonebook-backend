@@ -1,4 +1,4 @@
-import e from 'express';
+import express from 'express';
 import mongoose from 'mongoose';
 import { handleMongooseError } from '../helpers/handleMongooseError.js';
 
@@ -19,6 +19,11 @@ const contactSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  }
 }, { versionKey: false, timestamps: true });
 
 contactSchema.post('save', handleMongooseError);
