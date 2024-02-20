@@ -2,7 +2,8 @@ import Contact from '../models/contactModel.js';
 import HttpError from '../helpers/HttpError.js';
 
 export const getAllContacts = async (req, res) => {
-  const contacts = await Contact.find()
+  const { _id: owner } = req.user;
+  const contacts = await Contact.find({ owner }, '-createdAt -updatedAt -__v')
   res.status(200).json(contacts);
 };
 
@@ -16,13 +17,15 @@ export const getOneContact = async (req, res, next) => {
 };
 
 export const createContact = async (req, res) => {
+  const { _id: owner } = req.user;
+
   const existingContact = await Contact.findOne({ phone: req.body.phone });
 
   if (existingContact) {
     return res.status(409).json({ message: 'Contact with this phone number already exists.' });
   }
 
-  const newContact = await Contact.create(req.body);
+  const newContact = await Contact.create({ ...req.body, owner });
   res.status(201).json(newContact);
 };
 
