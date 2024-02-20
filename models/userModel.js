@@ -18,7 +18,6 @@ const userSchema = mongoose.Schema({
     enum: ["starter", "pro", "business"],
     default: "starter"
   },
-  token: String
 }, { versionKey: false, timestamps: true });
 
 userSchema.methods.matchPassword = async function (enteredPassword) {

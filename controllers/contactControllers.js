@@ -73,7 +73,6 @@ export const updateContact = async (req, res) => {
   res.status(200).json(updatedContact);
 };
 
-
 export const updateFavorite = async (req, res) => {
   const { id } = req.params;
   const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });

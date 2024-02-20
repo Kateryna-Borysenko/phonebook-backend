@@ -13,7 +13,7 @@ userRouter.post('/login', validateRequestBody(loginSchema), controllerWrapper(lo
 
 userRouter.get('/current', protect, controllerWrapper(getCurrentUser));
 
-userRouter.post('/logout', controllerWrapper(logoutUser));
+userRouter.post('/logout', protect, controllerWrapper(logoutUser));
 
 export default userRouter;
 
