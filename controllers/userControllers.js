@@ -43,16 +43,18 @@ export const loginUser = async (req, res) => {
   }
 };
 
+export const getCurrentUser = async (req, res) => {
+  const { email, subscription } = req.user;
+
+  res.json({
+    email,
+    subscription,
+  })
+}
+
 
 export const logoutUser = async (req, res) => {
-  // res.clearCookie("jwt", {
-  //   httpOnly: true,
-  //   secure: process.env.NODE_ENV !== 'development',
-  //   sameSite: 'strict',
-  //   // path: '/'
-  // });
 
-  // res.status(200).json({ message: "Logged out successfully" });
   res.json({ message: "Logged out successfully" });
 };
 
