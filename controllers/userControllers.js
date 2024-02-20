@@ -42,3 +42,17 @@ export const loginUser = async (req, res) => {
     res.status(401).json({ message: 'Not authorized' });
   }
 };
+
+
+export const logoutUser = async (req, res) => {
+  // res.clearCookie("jwt", {
+  //   httpOnly: true,
+  //   secure: process.env.NODE_ENV !== 'development',
+  //   sameSite: 'strict',
+  //   // path: '/'
+  // });
+
+  // res.status(200).json({ message: "Logged out successfully" });
+  res.json({ message: "Logged out successfully" });
+};
+

@@ -3,8 +3,31 @@ import HttpError from '../helpers/HttpError.js';
 
 export const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
-  const contacts = await Contact.find({ owner }, '-createdAt -updatedAt -__v')
-  res.status(200).json(contacts);
+
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 5;
+  const skip = (page - 1) * limit;
+
+  try {
+    const total = await Contact.countDocuments({ owner });
+
+    const contacts = await Contact.find({ owner }, '-createdAt -updatedAt -__v')
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.status(200).json({
+      contacts,
+      totalPages,
+      currentPage: page,
+      pageSize: limit,
+      totalContacts: total
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching contacts" });
+  }
 };
 
 export const getOneContact = async (req, res, next) => {
