@@ -2,7 +2,8 @@ import express from 'express';
 import validateRequestBody from '../middleware/validateRequestBody.js';
 import controllerWrapper from '../helpers/controllerWrapper.js';
 import { loginSchema, registerSchema } from '../schemas/userSchemas.js';
-import { registerUser, loginUser, getCurrentUser, logoutUser } from '../controllers/userControllers.js';
+import { subscriptionSchema } from '../schemas/subscriptionSchema.js';
+import { registerUser, loginUser, getCurrentUser, logoutUser, updateSubscription } from '../controllers/userControllers.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const userRouter = express.Router();
@@ -14,6 +15,8 @@ userRouter.post('/login', validateRequestBody(loginSchema), controllerWrapper(lo
 userRouter.get('/current', protect, controllerWrapper(getCurrentUser));
 
 userRouter.post('/logout', protect, controllerWrapper(logoutUser));
+
+userRouter.patch('/', protect, validateRequestBody(subscriptionSchema), controllerWrapper(updateSubscription));
 
 export default userRouter;
 

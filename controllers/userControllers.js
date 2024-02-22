@@ -61,3 +61,20 @@ export const logoutUser = (req, res) => {
 
   res.status(200).json({ message: 'Logged out successfully' });
 };
+
+export const updateSubscription = async (req, res) => {
+  const { _id } = req.user;
+  const { subscription } = req.body;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    { subscription },
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedUser) {
+    throw new HttpError(404);
+  }
+
+  res.status(200).json({ message: `You have updated your subscription to ${updatedUser.subscription}` });
+};
