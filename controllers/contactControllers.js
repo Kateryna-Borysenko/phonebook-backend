@@ -3,15 +3,21 @@ import HttpError from '../helpers/HttpError.js';
 
 export const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
+  const { favorite } = req.query;
 
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 5;
   const skip = (page - 1) * limit;
 
-  try {
-    const total = await Contact.countDocuments({ owner });
+  let filter = { owner };
+  if (favorite) {
+    filter.favorite = favorite === 'true';
+  }
 
-    const contacts = await Contact.find({ owner }, '-createdAt -updatedAt -__v')
+  try {
+    const total = await Contact.countDocuments(filter);
+
+    const contacts = await Contact.find(filter, '-createdAt -updatedAt -__v')
       .skip(skip)
       .limit(limit)
       .exec();
