@@ -4,6 +4,7 @@ import gravatar from 'gravatar';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import Jimp from 'jimp';
 import User from '../models/userModel.js';
 import HttpError from '../helpers/HttpError.js';
 import generateToken from '../helpers/generateToken.js';
@@ -89,15 +90,19 @@ export const updateAvatar = async (req, res) => {
 
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const avatarsDir = path.join(__dirname, "../", "public", "avatars");
+  const avatarsDir = path.join(__dirname, '..', 'public', 'avatars');
 
   const { path: tmpUpload, originalname } = req.file;
 
   const filename = `${_id}_${originalname}`;
   const resultUpload = path.join(avatarsDir, filename);
+
   await fs.rename(tmpUpload, resultUpload);
 
-  const avatarURL = path.join("avatars", filename);
+  const image = await Jimp.read(resultUpload);
+  await image.cover(250, 250).writeAsync(resultUpload);
+
+  const avatarURL = path.join('avatars', filename);
   await User.findByIdAndUpdate(_id, { avatarURL });
 
   res.status(200).json({
