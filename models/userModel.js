@@ -18,6 +18,10 @@ const userSchema = mongoose.Schema({
     enum: ["starter", "pro", "business"],
     default: "starter"
   },
+  avatarURL: {
+    type: String,
+    required: [true, 'Avatar is required']
+  },
 }, { versionKey: false, timestamps: true });
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
