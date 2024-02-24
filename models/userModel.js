@@ -22,6 +22,14 @@ const userSchema = mongoose.Schema({
     type: String,
     required: [true, 'Avatar is required']
   },
+  verify: {
+    type: Boolean,
+    default: false,
+  },
+  verificationCode: {
+    type: String,
+    required: [true, 'VerificationCode is required'],
+  }
 }, { versionKey: false, timestamps: true });
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
