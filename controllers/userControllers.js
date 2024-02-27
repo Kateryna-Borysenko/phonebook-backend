@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../models/userModel.js';
 import HttpError from '../helpers/HttpError.js';
@@ -27,20 +26,20 @@ export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
+  const passwordCompare = user && await bcrypt.compare(password, user.password);
 
-  if (user && (await user.matchPassword(password))) {
-    generateToken(res, user._id);
-
-    res.status(200).json({
-      user: {
-        id: user._id,
-        password,
-        email,
-      },
-    });
-  } else {
-    res.status(401).json({ message: 'Not authorized' });
+  if (!user || !passwordCompare) {
+    throw HttpError(401, "Email or password invalid");
   }
+
+  generateToken(res, user._id);
+
+  res.status(200).json({
+    user: {
+      email,
+      subscription: user.subscription,
+    },
+  });
 };
 
 export const getCurrentUser = async (req, res) => {
@@ -75,6 +74,5 @@ export const updateSubscription = async (req, res) => {
   if (!updatedUser) {
     throw new HttpError(404);
   }
-
-  res.status(200).json({ message: `You have updated your subscription to ${updatedUser.subscription}` });
+  res.status(200).json({ subscription });
 };
