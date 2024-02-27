@@ -5,13 +5,19 @@ export const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
   const { favorite } = req.query;
 
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 5;
-  const skip = (page - 1) * limit;
+  const { page = 1, limit = 5 } = req.query;
+  const pageNumber = Number(page);
+  const limitNumber = Number(limit);
+  const skip = (pageNumber - 1) * limitNumber;
 
   let filter = { owner };
-  if (favorite) {
-    filter.favorite = favorite === 'true';
+
+  if (favorite !== undefined) {
+    if (favorite === 'true') {
+      filter.favorite = true;
+    } else if (favorite === 'false') {
+      filter.favorite = false;
+    }
   }
 
   try {
