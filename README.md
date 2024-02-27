@@ -171,6 +171,10 @@ Adding a resending email to the user with a link for verification
 
 <img src="public/screens/verify.png" width="100%">
 
+## Dockerfile
+
+<img src="public/screens/docker.png" width="100%">
+
 ## Usage
 
 Use Postman to test the API endpoints by sending requests to
