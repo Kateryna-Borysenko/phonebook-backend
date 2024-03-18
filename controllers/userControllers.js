@@ -1,4 +1,4 @@
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 import { nanoid } from 'nanoid';
 import bcrypt from 'bcryptjs';
 import gravatar from 'gravatar';
@@ -28,13 +28,17 @@ export const registerUser = async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email, { s: '250' });
 
-
-  await User.create({ ...req.body, password: hashPassword, avatarURL, verificationCode });
+  await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL,
+    verificationCode,
+  });
 
   const verifyEmail = {
     to: email,
-    subject: "Verify email",
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>`
+    subject: 'Verify email',
+    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>`,
   };
 
   await sendEmail(verifyEmail);
@@ -51,38 +55,41 @@ export const verifyEmail = async (req, res) => {
   const user = await User.findOne({ verificationCode });
 
   if (!user) {
-    throw HttpError(401, "Email not found")
+    throw HttpError(401, 'Email not found');
   }
 
-  await User.findByIdAndUpdate(user._id, { verify: true, verificationCode: "" });
+  await User.findByIdAndUpdate(user._id, {
+    verify: true,
+    verificationCode: '',
+  });
 
   res.json({
-    message: "Email confirmed successfully"
-  })
-}
+    message: 'Email confirmed successfully',
+  });
+};
 
 export const resendVerifyEmail = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    throw HttpError(401, "Email not found");
+    throw HttpError(401, 'Email not found');
   }
   if (user.verify) {
-    throw HttpError(400, "Verification has already been passed");
+    throw HttpError(400, 'Verification has already been passed');
   }
 
   const verifyEmail = {
     to: email,
-    subject: "Verify email",
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${user.verificationCode}">Click to verify email</a>`
+    subject: 'Verify email',
+    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${user.verificationCode}">Click to verify email</a>`,
   };
 
   await sendEmail(verifyEmail);
 
   res.status(200).json({
-    message: "Verification email sent"
-  })
-}
+    message: 'Verification email sent',
+  });
+};
 
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -90,21 +97,23 @@ export const loginUser = async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user.verify) {
-    throw HttpError(401, "Email not verified");
+    throw HttpError(401, 'Email not verified');
   }
 
-  const passwordCompare = user && await bcrypt.compare(password, user.password);
+  const passwordCompare =
+    user && (await bcrypt.compare(password, user.password));
 
   if (!user || !passwordCompare) {
-    throw HttpError(401, "Email or password invalid");
+    throw HttpError(401, 'Email or password invalid');
   }
 
   generateToken(res, user._id);
 
-  res.status(200).json({
+  res.status(202).json({
     user: {
-      email,
-      subscription: user.subscription,
+      name: user.name,
+      email: user.email,
+      avatarURL: user.avatarURL,
     },
   });
 };
@@ -115,8 +124,8 @@ export const getCurrentUser = async (req, res) => {
   res.json({
     email,
     subscription,
-  })
-}
+  });
+};
 
 export const logoutUser = (req, res) => {
   res.clearCookie('jwt', {
@@ -135,7 +144,7 @@ export const updateSubscription = async (req, res) => {
   const updatedUser = await User.findByIdAndUpdate(
     _id,
     { subscription },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   );
 
   if (!updatedUser) {
@@ -166,6 +175,6 @@ export const updateAvatar = async (req, res) => {
 
   res.status(200).json({
     message: 'Avatar updated successfully',
-    avatarURL
+    avatarURL,
   });
-}
+};
