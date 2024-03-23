@@ -10,11 +10,9 @@ const baseContactSchemaFields = {
       'string.max': 'Name must be less than or equal to {#limit} characters long',
       'any.required': 'Name is a required field'
     }),
-  email: Joi.string().pattern(EMAIL_REGEX).required()
+  email: Joi.string().pattern(EMAIL_REGEX).optional() 
     .messages({
       'string.pattern.base': 'Invalid email format',
-      'string.empty': 'Email cannot be empty',
-      'any.required': 'Email is a required field'
     }),
   phone: Joi.string().pattern(PHONE_REGEX).required()
     .messages({

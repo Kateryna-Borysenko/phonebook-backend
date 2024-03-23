@@ -1,4 +1,3 @@
-import express from 'express';
 import mongoose from 'mongoose';
 import { handleMongooseError } from '../helpers/handleMongooseError.js';
 
@@ -9,7 +8,7 @@ const contactSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'Set email for contact'],
+    default: "",
   },
   phone: {
     type: String,
