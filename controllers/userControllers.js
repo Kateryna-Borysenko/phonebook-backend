@@ -13,7 +13,7 @@ import generateToken from '../helpers/generateToken.js';
 
 dotenv.config();
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = process.env.SERVER_BASE_URL;
 
 export const registerUser = async (req, res) => {
   const verificationCode = nanoid();
@@ -120,14 +120,13 @@ export const loginUser = async (req, res) => {
 
 export const getCurrentUser = async (req, res) => {
   const { email, subscription } = req.user;
-
   res.json({
     email,
     subscription,
   });
 };
 
-export const logoutUser = (req, res) => {
+export const logoutUser = async (req, res) => {
   res.clearCookie('jwt', {
     httpOnly: true,
     secure: process.env.NODE_ENV !== 'development',
