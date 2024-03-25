@@ -41,7 +41,7 @@ app.use((err, req, res, next) => {
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    app.listen(PORT, console.log('🌷🌷🌷'));
+    app.listen(PORT,() => console.log('🌷🌷🌷'));
   })
   .catch(err => {
     console.error(err.message);

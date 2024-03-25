@@ -13,7 +13,8 @@ import generateToken from '../helpers/generateToken.js';
 
 dotenv.config();
 
-const BASE_URL = process.env.SERVER_BASE_URL;
+const SERVER_BASE_URL = process.env.SERVER_BASE_URL;
+const CLIENT_BASE_URL = process.env.CLIENT_BASE_URL;
 
 export const registerUser = async (req, res) => {
   const verificationCode = nanoid();
@@ -38,7 +39,7 @@ export const registerUser = async (req, res) => {
   const verifyEmail = {
     to: email,
     subject: 'Verify email',
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>`,
+    html: `<a target="_blank" href="${SERVER_BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>`,
   };
 
   await sendEmail(verifyEmail);
@@ -63,9 +64,8 @@ export const verifyEmail = async (req, res) => {
     verificationCode: '',
   });
 
-  res.json({
-    message: 'Email confirmed successfully',
-  });
+  res.set('Location', `${CLIENT_BASE_URL}/email-confirmed`);
+  res.status(302).end(); 
 };
 
 export const resendVerifyEmail = async (req, res) => {
@@ -81,7 +81,7 @@ export const resendVerifyEmail = async (req, res) => {
   const verifyEmail = {
     to: email,
     subject: 'Verify email',
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${user.verificationCode}">Click to verify email</a>`,
+    html: `<a target="_blank" href="${SERVER_BASE_URL}/api/users/verify/${user.verificationCode}">Click to verify email</a>`,
   };
 
   await sendEmail(verifyEmail);
