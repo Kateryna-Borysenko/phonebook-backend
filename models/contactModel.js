@@ -6,13 +6,10 @@ const contactSchema = mongoose.Schema({
     type: String,
     required: [true, 'Set name for contact'],
   },
-  email: {
-    type: String,
-    default: "",
-  },
   phone: {
     type: String,
     required: [true, 'Set phone for contact'],
+    unique: true,
   },
   favorite: {
     type: Boolean,
