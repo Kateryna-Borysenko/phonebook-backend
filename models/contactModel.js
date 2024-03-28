@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { handleMongooseError } from '../helpers/handleMongooseError.js';
+import { setUpdateSettings } from '../helpers/setUpdateSettings.js';
 
 const contactSchema = mongoose.Schema({
   name: {
@@ -23,6 +24,10 @@ const contactSchema = mongoose.Schema({
 }, { versionKey: false, timestamps: true });
 
 contactSchema.post('save', handleMongooseError);
+
+contactSchema.pre('findOneAndUpdate', setUpdateSettings);
+
+contactSchema.post('findOneAndUpdate', handleMongooseError);
 
 const Contact = mongoose.model('Contact', contactSchema);
 

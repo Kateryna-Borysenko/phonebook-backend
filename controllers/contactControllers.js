@@ -5,7 +5,7 @@ export const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
   const { favorite } = req.query;
 
-  const { page = 1, limit = 5 } = req.query;
+  const { page = 1, limit = 100 } = req.query;
   const pageNumber = Number(page);
   const limitNumber = Number(limit);
   const skip = (pageNumber - 1) * limitNumber;
@@ -80,14 +80,14 @@ export const updateContact = async (req, res) => {
     return res.status(200).json({ message: "No changes detected. Contact was not updated." });
   }
 
-  const updatedContact = await Contact.findByIdAndUpdate(id, updates, { new: true });
+  const updatedContact = await Contact.findByIdAndUpdate(id, updates);
 
   res.status(200).json(updatedContact);
 };
 
 export const updateFavorite = async (req, res) => {
   const { id } = req.params;
-  const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+  const result = await Contact.findByIdAndUpdate(id, req.body);
   if (!result) {
     throw HttpError(404);
   }

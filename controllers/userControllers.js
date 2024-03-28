@@ -10,6 +10,7 @@ import User from '../models/userModel.js';
 import HttpError from '../helpers/HttpError.js';
 import sendEmail from '../helpers/sendEmail.js';
 import generateToken from '../helpers/generateToken.js';
+import { readFileSync } from 'fs';
 
 dotenv.config();
 
@@ -36,10 +37,67 @@ export const registerUser = async (req, res) => {
     verificationCode,
   });
 
+  // const image = fs.readFileSync('../public/images/verify-email.jpg', 'base64');
+  // const imageSrc = `data:image/jpeg;base64,${image}`;
+
+  // console.log('🌷  imageSrc:', imageSrc)
+
   const verifyEmail = {
     to: email,
     subject: 'Verify email',
-    html: `<a target="_blank" href="${SERVER_BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>`,
+    //first-version
+    // html: `<a target="_blank" href="${SERVER_BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>`,
+    html:
+    `<html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Email Verification</title>
+          <style>
+              body {
+                  background-color: #161616;
+                  color: white;
+              }
+              .container {
+                background-color: #161616;
+                color: white;
+                  padding: 50px 0;
+                  text-align: center;
+              }
+              .title{
+                  color:#d4fd02;
+                  margin-bottom: 44px;
+              }
+              .image{
+                  width: 250px;
+              }
+              .button {
+                  display: inline-block;
+                  padding: 10px 20px;
+                  margin: 20px 0;
+                  background-color: #8baa36;
+                  color: white;
+                  text-decoration: none;
+                  font-weight: bold;
+                  transition: background-color 0.3s;
+              }
+              .button:hover {
+                  background-color: #8baa36ce;
+              }
+              .description{
+                  color:grey;
+              }
+          </style>
+      </head>
+      <body>
+          <div class="container">
+              <h2 class="title">Verify your email address</h2>
+              <p>Thanks for signing up with us. <br/> Click on the button below to verify your email address.</p>
+              <a class="button" href="${SERVER_BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>
+              <p class="description">If this email wasn't intended for you, feel free to delete it.</p>
+          </div>
+      </body>
+    </html>`,
   };
 
   await sendEmail(verifyEmail);
@@ -143,7 +201,6 @@ export const updateSubscription = async (req, res) => {
   const updatedUser = await User.findByIdAndUpdate(
     _id,
     { subscription },
-    { new: true, runValidators: true },
   );
 
   if (!updatedUser) {
