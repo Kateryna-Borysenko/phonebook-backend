@@ -10,7 +10,6 @@ import User from '../models/userModel.js';
 import HttpError from '../helpers/HttpError.js';
 import sendEmail from '../helpers/sendEmail.js';
 import generateToken from '../helpers/generateToken.js';
-import { readFileSync } from 'fs';
 
 dotenv.config();
 
@@ -22,31 +21,18 @@ export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   const userExists = await User.findOne({ email });
-
   if (userExists) {
     throw HttpError(409, 'Email already in use');
   }
-
   const hashPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email, { s: '250' });
 
-  await User.create({
-    ...req.body,
-    password: hashPassword,
-    avatarURL,
-    verificationCode,
-  });
-
-  // const image = fs.readFileSync('../public/images/verify-email.jpg', 'base64');
-  // const imageSrc = `data:image/jpeg;base64,${image}`;
-
-  // console.log('🌷  imageSrc:', imageSrc)
+  await User.create({ ...req.body, password: hashPassword, avatarURL, verificationCode });
 
   const verifyEmail = {
     to: email,
-    subject: 'Verify email',
-    //first-version
-    // html: `<a target="_blank" href="${SERVER_BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>`,
+    subject: "Verify email",
+    // html: `<a target="_blank" href="${SERVER_BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>`
     html:
     `<html lang="en">
       <head>
@@ -201,6 +187,7 @@ export const updateSubscription = async (req, res) => {
   const updatedUser = await User.findByIdAndUpdate(
     _id,
     { subscription },
+    { new: true, runValidators: true }
   );
 
   if (!updatedUser) {

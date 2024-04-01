@@ -5,7 +5,7 @@ export const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
   const { favorite } = req.query;
 
-  const { page = 1, limit = 100 } = req.query;
+  const { page = 1, limit = 10  } = req.query;
   const pageNumber = Number(page);
   const limitNumber = Number(limit);
   const skip = (pageNumber - 1) * limitNumber;

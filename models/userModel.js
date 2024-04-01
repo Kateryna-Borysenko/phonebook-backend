@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { handleMongooseError } from '../helpers/handleMongooseError.js';
-import { setUpdateSettings } from '../helpers/setUpdateSettings.js';
 
 const userSchema = mongoose.Schema(
   {
@@ -39,10 +38,6 @@ const userSchema = mongoose.Schema(
 );
 
 userSchema.post('save', handleMongooseError);
-
-userSchema.pre('findOneAndUpdate', setUpdateSettings);
-
-userSchema.post('findOneAndUpdate', handleMongooseError);
 
 const User = mongoose.model('User', userSchema);
 
