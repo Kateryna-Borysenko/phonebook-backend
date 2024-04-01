@@ -24,6 +24,7 @@ export const getAllContacts = async (req, res) => {
     const total = await Contact.countDocuments(filter);
 
     const contacts = await Contact.find(filter, '-createdAt -updatedAt -__v')
+      .sort({ name: 1 })
       .skip(skip)
       .limit(limit)
       .exec();
