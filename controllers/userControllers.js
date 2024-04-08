@@ -159,6 +159,7 @@ export const loginUser = async (req, res) => {
       name: user.name,
       email: user.email,
       avatarURL: user.avatarURL,
+      subscription: user.subscription
     },
   });
 };
