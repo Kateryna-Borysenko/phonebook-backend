@@ -25,6 +25,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, 'Avatar is required'],
     },
+    token: {
+      type: String,
+      default: null,
+    },
     verify: {
       type: Boolean,
       default: false,

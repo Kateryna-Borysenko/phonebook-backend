@@ -2,14 +2,11 @@ import dotenv from 'dotenv';
 import { nanoid } from 'nanoid';
 import bcrypt from 'bcryptjs';
 import gravatar from 'gravatar';
-import Jimp from 'jimp';
+import jwt from 'jsonwebtoken';
 import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import User from '../models/userModel.js';
 import HttpError from '../helpers/HttpError.js';
 import sendEmail from '../helpers/sendEmail.js';
-import generateToken from '../helpers/generateToken.js';
 import cloudinary from "../helpers/cloudinary.js";
 
 dotenv.config();
@@ -151,9 +148,20 @@ export const loginUser = async (req, res) => {
     throw HttpError(401, 'Email or password invalid');
   }
 
-  generateToken(res, user._id);
+  const {_id: id} = user;
+
+  const payload = {
+    id,
+  }
+
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN || '1h',
+  });
+
+  await User.findByIdAndUpdate(user._id, {token});
 
   res.status(202).json({
+    token,
     user: {
       name: user.name,
       email: user.email,
@@ -171,12 +179,10 @@ export const getCurrentUser = async (req, res) => {
   });
 };
 
-export const logoutUser = async (req, res) => {
-  res.clearCookie('jwt', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV !== 'development',
-    sameSite: 'none',
-  });
+export const logoutUser = async (req, res) => { 
+  const { _id } = req.user;
+  await User.findByIdAndUpdate( _id, { token: "" }, { new: true, runValidators: true }
+);
 
   res.status(200).json({ message: 'Logged out successfully' });
 };
