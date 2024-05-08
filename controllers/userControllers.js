@@ -172,11 +172,16 @@ export const loginUser = async (req, res) => {
 };
 
 export const getCurrentUser = async (req, res) => {
-  const { email, subscription } = req.user;
+  const user = req.user;
+  
   res.json({
-    email,
-    subscription,
-  });
+    user: {
+      name: user.name,
+      email: user.email,
+      avatarURL: user.avatarURL,
+      subscription: user.subscription
+    },
+});
 };
 
 export const logoutUser = async (req, res) => { 
