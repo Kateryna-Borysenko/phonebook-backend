@@ -33,7 +33,6 @@ export const registerUser = async (req, res) => {
   const verifyEmail = {
     to: email,
     subject: "Verify email",
-    // html: `<a target="_blank" href="${SERVER_BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>`
     html:
     `<html lang="en">
       <head>
@@ -176,7 +175,6 @@ export const logoutUser = async (req, res) => {
   res.clearCookie('jwt', {
     httpOnly: true,
     secure: process.env.NODE_ENV !== 'development',
-    // sameSite: 'strict',
     sameSite: 'none',
   });
 
@@ -199,41 +197,9 @@ export const updateSubscription = async (req, res) => {
   res.status(200).json({ subscription });
 };
 
-//way to save files on public (not cloudinary)
-// export const updateAvatar = async (req, res) => {
-//   const { _id } = req.user;
-
-//   const __filename = fileURLToPath(import.meta.url);
-//   const __dirname = path.dirname(__filename);
-//   const avatarsDir = path.join(__dirname, '..', 'public', 'avatars');
-
-//   const { path: tmpUpload, originalname } = req.file;
-
-//   const filename = `${_id}_${originalname}`;
-//   const resultUpload = path.join(avatarsDir, filename);
-
-//   await fs.rename(tmpUpload, resultUpload);
-
-//   const image = await Jimp.read(resultUpload);
-//   await image.cover(250, 250).writeAsync(resultUpload);
-
-//   const avatarURL = path.join('avatars', filename);
-//   await User.findByIdAndUpdate(_id, {avatarURL: `${SERVER_BASE_URL}/${avatarURL}` });
-
-//   res.status(200).json({
-//     message: 'Avatar updated successfully',
-//     avatarURL: `${SERVER_BASE_URL}/${avatarURL}`,
-//   });
-// };
-
 
 export const updateAvatar = async (req, res) => {
 const { _id } = req.user;
-
-// const fileData = await cloudinary.uploader.upload(req.file.path, {
-//   folder: "phonebook-avatars"
-// })
-// console.log(fileData);
 
   const {url: avatarURL} = await cloudinary.uploader.upload(req.file.path, {
     folder: "phonebook-avatars"
